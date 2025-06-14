@@ -1,31 +1,38 @@
 import { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      count: 0,
+      monsters : [],
     };
   }
 
-  incrementCount = () => {
-    this.setState((prevState) => ({ count: prevState.count + 1 }));
-  };
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(users => {
+        this.setState(() => {
+          return { monsters: users };
+        });
+      })
+      .catch(error => console.error('Error fetching data:', error));  
+  }
 
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Count: {this.state.count}
-          </p>
-          <button onClick={this.incrementCount}>
-            Increment Count
-          </button>
-        </header>
+        {
+          this.state.monsters.map((monster) => {
+            return (
+              <div key={monster.id} className="monster-card">
+                <h2>{monster.name}</h2>
+              </div>
+            )
+          })
+      }
       </div>
     );
   }
