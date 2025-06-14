@@ -1,6 +1,7 @@
 import { Component } from 'react';
-// import logo from './logo.svg';
 import './App.css';
+import CardList from './components/card-list/card-list.component.jsx';
+
 
 class App extends Component {
   constructor() {
@@ -22,10 +23,18 @@ class App extends Component {
       .catch(error => console.error('Error fetching data:', error));  
   }
 
+  onSearch = (event) => {
+    const searchField = event.target.value.toLowerCase();
+    this.setState({ searchField: searchField });
+  }
+
   render() {
 
-    const filteredMonsters = this.state.monsters.filter((monster) => {
-      return monster.name.toLowerCase().includes(this.state.searchField.toLowerCase());
+    const { monsters, searchField } = this.state;
+    const { onSearch } = this;
+
+    const filteredMonsters = monsters.filter((monster) => {
+      return monster.name.toLowerCase().includes(searchField.toLowerCase());
     });
 
     return (
@@ -34,20 +43,9 @@ class App extends Component {
           className='search-box' 
           type='search' 
           placeholder='search monsters' 
-          onChange={(event) => {
-            const searchField = event.target.value.toLowerCase();
-            this.setState({ searchField: searchField });
-          }}
+          onChange={onSearch}
         />
-        {
-          filteredMonsters.map((monster) => {
-            return (
-              <div key={monster.id} className="monster-card">
-                <h2>{monster.name}</h2>
-              </div> 
-            )
-          })
-        }
+        <CardList monsters={filteredMonsters}/>
       </div>
     );
   }
